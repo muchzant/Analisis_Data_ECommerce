@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-FILE_PATH = 'https://github.com/muchzant/Analisis_Data_ECommerce/blob/main/data/all_data.csv'
+FILE_PATH ='https://github.com/muchzant/Analisis_Data_ECommerce/blob/main/data/all_data.csv'
 
 @st.cache_data
 def load_data(file_path):
@@ -16,7 +16,7 @@ def load_data(file_path):
 
 data = load_data(FILE_PATH)
 
-if data is not None:
+#if data is not None:
     
     st.markdown("<h1 style='text-align: center; color: blue;'>DATA ANALISIS DENGAN PYTHON</h1>", unsafe_allow_html=True)
     st.image("eCommerce.png", caption="Analisis Data E-Commerce", use_container_width=True)
@@ -66,5 +66,5 @@ if data is not None:
 
     st.pyplot(fig)
 
-else:
-    st.warning("Tidak ada data yang bisa ditampilkan, periksa file csv")
+#else:
+    #st.warning("Tidak ada data yang bisa ditampilkan, periksa file csv")
