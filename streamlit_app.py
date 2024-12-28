@@ -18,7 +18,7 @@ data = load_data(FILE_PATH)
 
 #if data is not None:
     
-    st.markdown("<h1 style='text-align: center; color: blue;'>DATA ANALISIS DENGAN PYTHON</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: blue;'>DATA ANALISIS DENGAN PYTHON</h1>")
     st.image("eCommerce.png", caption="Analisis Data E-Commerce", use_container_width=True)
 
     st.write(
