@@ -1,151 +1,70 @@
 import streamlit as st
 import pandas as pd
-import math
-from pathlib import Path
+import matplotlib.pyplot as plt
 
-# Set the title and favicon that appear in the Browser's tab bar.
-st.set_page_config(
-    page_title='GDP dashboard',
-    page_icon=':earth_americas:', # This is an emoji shortcode. Could be a URL too.
-)
-
-# -----------------------------------------------------------------------------
-# Declare some useful functions.
+FILE_PATH = '/workspaces/Analisis_Data_ECommerce/data/all_data.csv'
 
 @st.cache_data
-def get_gdp_data():
-    """Grab GDP data from a CSV file.
+def load_data(file_path):
+    """Memuat data dari file csv."""
+    try:
+        data = pd.read_csv(file_path)
+        return data
+    except FileNotFoundError:
+        st.error(f"File {file_path} tidak ditemukan. Pastikan file berada di direktori yang benar.")
+        return None
 
-    This uses caching to avoid having to read the file every time. If we were
-    reading from an HTTP endpoint instead of a file, it's a good idea to set
-    a maximum age to the cache with the TTL argument: @st.cache_data(ttl='1d')
-    """
+data = load_data(FILE_PATH)
 
-    # Instead of a CSV on disk, you could read from an HTTP endpoint here too.
-    DATA_FILENAME = Path(__file__).parent/'data/gdp_data.csv'
-    raw_gdp_df = pd.read_csv(DATA_FILENAME)
+if data is not None:
+    
+    st.markdown("<h1 style='text-align: center; color: blue;'>DATA ANALISIS DENGAN PYTHON</h1>", unsafe_allow_html=True)
+    st.image("eCommerce.png", caption="Analisis Data E-Commerce", use_container_width=True)
 
-    MIN_YEAR = 1960
-    MAX_YEAR = 2022
-
-    # The data above has columns like:
-    # - Country Name
-    # - Country Code
-    # - [Stuff I don't care about]
-    # - GDP for 1960
-    # - GDP for 1961
-    # - GDP for 1962
-    # - ...
-    # - GDP for 2022
-    #
-    # ...but I want this instead:
-    # - Country Name
-    # - Country Code
-    # - Year
-    # - GDP
-    #
-    # So let's pivot all those year-columns into two: Year and GDP
-    gdp_df = raw_gdp_df.melt(
-        ['Country Code'],
-        [str(x) for x in range(MIN_YEAR, MAX_YEAR + 1)],
-        'Year',
-        'GDP',
+    st.write(
+        """
+        ## Tingkat Kepuasan Pelanggan
+        Berikut Merupakan Grafik Tingkat Kepuasan Pelanggan Berdasarkan Review Score.
+        """
     )
 
-    # Convert years from string to integers
-    gdp_df['Year'] = pd.to_numeric(gdp_df['Year'])
+    review_counts = data['review_score'].value_counts().sort_index()
 
-    return gdp_df
+    scores = review_counts.index.tolist()
+    counts = review_counts.values
+    colors = ['lime', 'blue', 'red', 'magenta', 'gold'][:len(scores)]
 
-gdp_df = get_gdp_data()
+    fig, ax = plt.subplots()
+    ax.bar(scores, counts, color=colors)
+    ax.set_title(None)
+    ax.set_xlabel("Review Score")
+    ax.set_ylabel("Jumlah")
+    ax.grid(axis='y', linestyle='--', alpha=0.7)
 
-# -----------------------------------------------------------------------------
-# Draw the actual page
+    st.pyplot(fig)
 
-# Set the title that appears at the top of the page.
-'''
-# :earth_americas: GDP dashboard
+    st.write(
+        """
+        ## Produk Yang Banyak Dibeli Pelanggan
+        Berikut Merupakan Grafik Produk Yang Paling Banyak Dibeli Pelanggan.
+        """
+    )
 
-Browse GDP data from the [World Bank Open Data](https://data.worldbank.org/) website. As you'll
-notice, the data only goes to 2022 right now, and datapoints for certain years are often missing.
-But it's otherwise a great (and did I mention _free_?) source of data.
-'''
+    product_counts = data['product_category_name_english'].value_counts()
 
-# Add some spacing
-''
-''
+    products = product_counts.index.tolist()
+    counts = product_counts.values
+    colors = ['blue', 'cyan', 'magenta', 'gold', 'lime', 'gray'][:len(products)]
 
-min_value = gdp_df['Year'].min()
-max_value = gdp_df['Year'].max()
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.bar(products, counts, color=colors)
+    ax.set_title(None)
+    ax.set_xlabel("Nama Produk")
+    ax.set_ylabel("Jumlah")
+    ax.tick_params(axis='x', rotation=45)
+    ax.grid(axis='y', linestyle='--', alpha=0.7)
 
-from_year, to_year = st.slider(
-    'Which years are you interested in?',
-    min_value=min_value,
-    max_value=max_value,
-    value=[min_value, max_value])
+    st.pyplot(fig)
 
-countries = gdp_df['Country Code'].unique()
-
-if not len(countries):
-    st.warning("Select at least one country")
-
-selected_countries = st.multiselect(
-    'Which countries would you like to view?',
-    countries,
-    ['DEU', 'FRA', 'GBR', 'BRA', 'MEX', 'JPN'])
-
-''
-''
-''
-
-# Filter the data
-filtered_gdp_df = gdp_df[
-    (gdp_df['Country Code'].isin(selected_countries))
-    & (gdp_df['Year'] <= to_year)
-    & (from_year <= gdp_df['Year'])
-]
-
-st.header('GDP over time', divider='gray')
-
-''
-
-st.line_chart(
-    filtered_gdp_df,
-    x='Year',
-    y='GDP',
-    color='Country Code',
-)
-
-''
-''
-
-
-first_year = gdp_df[gdp_df['Year'] == from_year]
-last_year = gdp_df[gdp_df['Year'] == to_year]
-
-st.header(f'GDP in {to_year}', divider='gray')
-
-''
-
-cols = st.columns(4)
-
-for i, country in enumerate(selected_countries):
-    col = cols[i % len(cols)]
-
-    with col:
-        first_gdp = first_year[first_year['Country Code'] == country]['GDP'].iat[0] / 1000000000
-        last_gdp = last_year[last_year['Country Code'] == country]['GDP'].iat[0] / 1000000000
-
-        if math.isnan(first_gdp):
-            growth = 'n/a'
-            delta_color = 'off'
-        else:
-            growth = f'{last_gdp / first_gdp:,.2f}x'
-            delta_color = 'normal'
-
-        st.metric(
-            label=f'{country} GDP',
-            value=f'{last_gdp:,.0f}B',
-            delta=growth,
-            delta_color=delta_color
-        )
+else:
+    st.warning("Tidak ada data yang bisa ditampilkan, periksa file csv")
