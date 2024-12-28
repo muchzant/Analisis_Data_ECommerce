@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-FILE_PATH = '/workspaces/Analisis_Data_ECommerce/data/all_data.csv'
+FILE_PATH = 'https://github.com/muchzant/Analisis_Data_ECommerce/blob/main/data/all_data.csv'
 
 @st.cache_data
 def load_data(file_path):
