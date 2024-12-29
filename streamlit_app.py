@@ -36,7 +36,7 @@ if data is not None:
 
     fig, ax = plt.subplots()
     ax.bar(scores, counts, color=colors)
-    ax.set_title("Tingkat Kepuasan Pelanggan")
+    ax.set_title(None)
     ax.set_xlabel("Review Score")
     ax.set_ylabel("Jumlah")
     ax.grid(axis='y', linestyle='--', alpha=0.7)
@@ -58,7 +58,7 @@ if data is not None:
 
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.bar(products, counts, color=colors)
-    ax.set_title("Produk Paling Banyak Dibeli")
+    ax.set_title(None)
     ax.set_xlabel("Nama Produk")
     ax.set_ylabel("Jumlah")
     ax.tick_params(axis='x', rotation=45)
