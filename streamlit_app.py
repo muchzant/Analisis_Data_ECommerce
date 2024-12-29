@@ -32,7 +32,7 @@ if data is not None:
 
     scores = review_counts.index.tolist()
     counts = review_counts.values
-    colors = ['lime', 'blue', 'red', 'magenta', 'gold'][:len(scores)]
+    colors = ['red', 'gold', 'magenta', 'blue', 'lime'][:len(scores)]
 
     fig, ax = plt.subplots()
     ax.bar(scores, counts, color=colors)
