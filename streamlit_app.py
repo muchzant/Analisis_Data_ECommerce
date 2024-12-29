@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-FILE_PATH ='https://github.com/muchzant/Analisis_Data_ECommerce/blob/main/data/all_data.csv'
+FILE_PATH = 'all_data.csv'
 
 @st.cache_data
 def load_data(file_path):
@@ -16,9 +16,9 @@ def load_data(file_path):
 
 data = load_data(FILE_PATH)
 
-#if data is not None:
+if data is not None:
     
-    st.markdown("<h1 style='text-align: center; color: blue;'>DATA ANALISIS DENGAN PYTHON</h1>")
+    st.markdown("<h1 style='text-align: center; color: blue;'>DATA ANALISIS DENGAN PYTHON</h1>", unsafe_allow_html=True)
     st.image("eCommerce.png", caption="Analisis Data E-Commerce", use_container_width=True)
 
     st.write(
@@ -36,7 +36,7 @@ data = load_data(FILE_PATH)
 
     fig, ax = plt.subplots()
     ax.bar(scores, counts, color=colors)
-    ax.set_title(None)
+    ax.set_title("Tingkat Kepuasan Pelanggan")
     ax.set_xlabel("Review Score")
     ax.set_ylabel("Jumlah")
     ax.grid(axis='y', linestyle='--', alpha=0.7)
@@ -58,7 +58,7 @@ data = load_data(FILE_PATH)
 
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.bar(products, counts, color=colors)
-    ax.set_title(None)
+    ax.set_title("Produk Paling Banyak Dibeli")
     ax.set_xlabel("Nama Produk")
     ax.set_ylabel("Jumlah")
     ax.tick_params(axis='x', rotation=45)
@@ -66,5 +66,5 @@ data = load_data(FILE_PATH)
 
     st.pyplot(fig)
 
-#else:
-    #st.warning("Tidak ada data yang bisa ditampilkan, periksa file csv")
+else:
+    st.warning("Tidak ada data yang bisa ditampilkan, periksa file csv")
