@@ -21,14 +21,12 @@ if data is not None:
     st.markdown("<h1 style='text-align: center; color: blue;'>DATA ANALISIS DENGAN PYTHON</h1>", unsafe_allow_html=True)
     st.image("eCommerce.png", caption="Analisis Data E-Commerce", use_container_width=True)
 
-    # Filter interaktif untuk review score
     st.sidebar.header ("Cek Jumlah Pesanan Berdasarkan Review Score")
     review_score_options = sorted(data['review_score'].dropna().unique())
     selected_score = st.sidebar.selectbox("Pilih Review Score untuk Ditampilkan:",
         options=review_score_options
     )
 
-    # Filter data berdasarkan pilihan pengguna
     filtered_data = data[data['review_score'] == selected_score]
     review_counts = filtered_data['review_score'].value_counts().sort_index()
     customer_count = len(filtered_data)
@@ -36,7 +34,6 @@ if data is not None:
     st.sidebar.write(f"### Jumlah Yang Mendapatkan Review Score **{selected_score}** adalah: **{customer_count}** Pesanan")
     st.write(f"## Grafik Jumlah Pesanan Yang Mendapatkan Review Score **{selected_score}**")
 
-    # Data untuk visualisasi
     review_counts = filtered_data['review_score'].value_counts().sort_index() 
 
     scores = review_counts.index.tolist()
